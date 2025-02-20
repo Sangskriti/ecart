@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 # Product Model
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Ensure auto-increment
-    name = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     image = db.Column(db.String(255), nullable=False)
 
@@ -35,13 +35,13 @@ def home():
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
-    return jsonify([{'id': p.id, 'name': p.name, 'price': p.price, 'image': p.image} for p in products])
+    return jsonify([{'id': p.id, 'title': p.title, 'price': p.price, 'image': p.image} for p in products])
 
 # Add a new product
 @app.route('/products', methods=['POST'])
 def add_product():
     data = request.json
-    if not data.get('name') or not data.get('price') or not data.get('image'):
+    if not data.get('title') or not data.get('price') or not data.get('image'):
         return jsonify({'error': 'Missing fields'}), 400
 
     try:

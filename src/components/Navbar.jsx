@@ -49,7 +49,7 @@ const Navbar = ({ setData, cart, wishlist, items, setItems }) => {
     const updatedProducts = [...items, { id: Date.now(), ...newProduct }];
     setItems(updatedProducts);
     setData(updatedProducts);
-    setNewProduct({ name: "", description: "", price: "", imgSrc: "", category: "" });
+    setNewProduct({ title: "", description: "", price: "", imgSrc: "", category: "" });
     setShow(false);
   };
  
