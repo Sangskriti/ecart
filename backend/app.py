@@ -12,10 +12,13 @@ db = SQLAlchemy(app)
 
 # Product Model
 class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Ensure auto-increment
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
     title = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     image = db.Column(db.String(255), nullable=False)
+
+    # Relationship with Cart
+    cart_items = db.relationship('Cart', backref='product', cascade="all, delete-orphan")
 
 # Cart Model
 class Cart(db.Model):
@@ -35,7 +38,10 @@ def home():
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
-    return jsonify([{'id': p.id, 'title': p.title, 'price': p.price, 'image': p.image} for p in products])
+    return jsonify([
+        {'id': p.id, 'title': p.title, 'price': p.price, 'image': p.image} 
+        for p in products
+    ])
 
 # Add a new product
 @app.route('/products', methods=['POST'])
@@ -45,7 +51,7 @@ def add_product():
         return jsonify({'error': 'Missing fields'}), 400
 
     try:
-        new_product = Product(name=data['name'], price=data['price'], image=data['image'])
+        new_product = Product(title=data['title'], price=data['price'], image=data['image'])
         db.session.add(new_product)
         db.session.commit()
         return jsonify({'message': 'Product added successfully', 'id': new_product.id}), 201
@@ -64,11 +70,20 @@ def delete_product(id):
     db.session.commit()
     return jsonify({'message': 'Product deleted successfully'}), 200
 
-# Get all cart items
+# Get all cart items with product details
 @app.route('/cart', methods=['GET'])
 def get_cart():
     cart_items = Cart.query.all()
-    cart_products = [{'id': c.id, 'product_id': c.product_id} for c in cart_items]
+    cart_products = [
+        {
+            'cart_id': c.id,
+            'product_id': c.product_id,
+            'title': c.product.title,
+            'price': c.product.price,
+            'image': c.product.image
+        }
+        for c in cart_items
+    ]
     return jsonify(cart_products)
 
 # Add product to cart
