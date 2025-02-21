@@ -1,9 +1,18 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Cart = ({ cart, setCart }) => {
+  
+  // Function to remove a specific item from the cart
+  const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+    toast.error("Item removed from cart", { autoClose: 1500 });
+  };
+
   return (
     <>
+      <ToastContainer />
       <div className="container my-5" style={{ width: "54%" }}>
         {cart.length === 0 ? (
           <div className="text-center">
@@ -25,6 +34,9 @@ const Cart = ({ cart, setCart }) => {
                     <p className="card-text">{product.description}</p>
                     <button className="btn btn-primary mx-3">{product.price} ₹</button>
                     <button className="btn btn-warning">Buy Now</button>
+                    {/* <button onClick={() => removeFromCart(product.id)} className="btn btn-danger mx-2">
+                      Remove
+                    </button> */}
                   </div>
                 </div>
               </div>

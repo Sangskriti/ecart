@@ -26,7 +26,9 @@ export const addProduct = async (product) => {
 // Delete a product
 export const deleteProduct = async (id) => {
     try {
+        console.log(`Deleting product: ${id}`);  // Debugging
         await axios.delete(`${API_URL}/products/${id}`);
+        console.log("Product deleted successfully!");  // Debugging
     } catch (error) {
         console.error("Error deleting product:", error);
     }

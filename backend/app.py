@@ -63,12 +63,20 @@ def add_product():
 @app.route('/products/<int:id>', methods=['DELETE'])
 def delete_product(id):
     product = Product.query.get(id)
+    
     if not product:
         return jsonify({'error': 'Product not found'}), 404
     
-    db.session.delete(product)
-    db.session.commit()
-    return jsonify({'message': 'Product deleted successfully'}), 200
+    try:
+        db.session.delete(product)
+        db.session.commit()
+        print(f"Deleted product: {id}")  # Debugging
+        return jsonify({'message': 'Product deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting product {id}: {e}")  # Debugging
+        return jsonify({'error': str(e)}), 500
+
 
 # Get all cart items with product details
 @app.route('/cart', methods=['GET'])
