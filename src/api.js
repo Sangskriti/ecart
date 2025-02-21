@@ -60,3 +60,15 @@ export const removeFromCart = async (id) => {
         console.error("Error removing from cart:", error);
     }
 };
+// Search products by query
+export const searchProducts = async (query) => {
+    try {
+        console.log(`Searching for: ${query}`);  // Debugging
+        const res = await axios.get(`${API_URL}/search?q=${query}`);
+        console.log("Search results:", res.data);  // Debugging
+        return res.data;
+    } catch (error) {
+        console.error("Error searching products:", error);
+        return [];
+    }
+};

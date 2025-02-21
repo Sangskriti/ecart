@@ -118,5 +118,24 @@ def remove_from_cart(id):
     db.session.commit()
     return jsonify({'message': 'Removed from cart'}), 200
 
+@app.route('/search', methods=['GET'])
+def search_products():
+    query = request.args.get('q', '').strip().lower()  # Get search query
+    if not query:
+        return jsonify([])  # Return empty list if no query provided
+
+    print(f"Searching for: {query}")  # Debugging: Check search term
+
+    # Perform case-insensitive search on the title field
+    products = Product.query.filter(Product.title.ilike(f"%{query}%")).all()
+
+    print(f"Products found: {products}")  # Debugging: Print matched products
+
+    return jsonify([
+        {'id': p.id, 'title': p.title, 'price': p.price, 'image': p.image}
+        for p in products
+    ])
+
+
 if __name__ == '__main__':
     app.run(debug=True)
